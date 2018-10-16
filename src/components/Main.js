@@ -18,7 +18,8 @@ class Main extends Component {
   state = {
     loading: true,
     text: '',
-    todos: []
+    todos: [],
+    run: 0
   };
   async componentWillMount() {
     await Expo.Font.loadAsync({
@@ -29,15 +30,34 @@ class Main extends Component {
     this.setState({
       loading: false
     });
+    this.timer = setInterval(
+      () =>
+        this.setState(prevState => {
+          return {
+            run: prevState.run + 1
+          };
+        }),
+      1000
+    );
+  }
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
   addTodo = () => {
     const { todos } = this.state;
-    const time = new Date();
-    const dateString = time.toLocaleFormat('%H : %M');
+    const time = Date.now();
     todos.push({
       txt: this.state.text,
-      dateString
+      time
     });
+    console.log(todos);
+    this.setState({
+      todos
+    });
+  };
+  deleteTodo = index => {
+    const { todos } = this.state;
+    todos.splice(index, 1);
     this.setState({
       todos
     });
@@ -72,10 +92,15 @@ class Main extends Component {
           <Button
             primary
             rounded
-            style={{ marginVertical: 16, alignSelf: 'center' }}>
+            style={{ marginVertical: 16, alignSelf: 'center' }}
+            onPress={this.addTodo}>
             <Text>Add item</Text>
           </Button>
-          <ListItem todos={this.state.todos} />
+          <ListItem
+            key={this.state.run}
+            todos={this.state.todos}
+            handleDelete={this.deleteTodo}
+          />
         </Content>
       </Container>
     );

@@ -1,18 +1,33 @@
 import React, { Component } from 'react';
-import { Card, Text, CardItem } from 'native-base';
+import { Card, Text, CardItem, List } from 'native-base';
+import { TouchableOpacity } from 'react-native';
+import { differenceInMinutes } from 'date-fns';
 
 export default class ListItem extends Component {
   render() {
     return (
-      <Card dataArray={this.props.todos}>
-        <CardItem header>
-          <Text>6 mins ago</Text>
-        </CardItem>
-        <CardItem cardBody>
-          <Text>Design a todo app in React Native</Text>
-        </CardItem>
-        <CardItem footer />
-      </Card>
+      <List
+        dataArray={this.props.todos.map((todo, index) => ({ ...todo, index }))}
+        renderRow={todo => {
+          const diff = differenceInMinutes(Date.now(), todo.time);
+          const timeTxt = `${diff} min${diff > 1 ? 's' : ''} ago`;
+
+          return (
+            <TouchableOpacity
+              onPress={() => this.props.handleDelete(todo.index)}>
+              <Card>
+                <CardItem header>
+                  <Text>{timeTxt}</Text>
+                </CardItem>
+                <CardItem cardBody>
+                  <Text>{todo.txt}</Text>
+                </CardItem>
+                <CardItem footer />
+              </Card>
+            </TouchableOpacity>
+          );
+        }}
+      />
     );
   }
 }
