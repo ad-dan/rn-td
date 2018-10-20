@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Main from './src/components/Main';
 import { createStackNavigator } from 'react-navigation';
 import AddPage from './src/components/AddPage';
+import DonePage from './src/components/CompletePage';
 class LandingPage extends React.Component {
   static navigationOptions = {
     title: 'Todo',
@@ -44,7 +45,8 @@ const styles = StyleSheet.create({
 const App = createStackNavigator(
   {
     Home: { screen: LandingPage },
-    Add: { screen: AddPage }
+    Add: { screen: AddPage },
+    Done: { screen: DonePage }
   },
   {
     headerMode: 'none',

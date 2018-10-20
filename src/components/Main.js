@@ -21,7 +21,8 @@ class Main extends Component {
         {
           todoTxt: 'This is a sample todo app',
           todoTitle: 'Sample Todo',
-          time: Date.now()
+          time: Date.now(),
+          finished: false
         }
       ],
       runId: 0
@@ -36,6 +37,13 @@ class Main extends Component {
       });
     }, 1000 * 60);
   }
+  completeItem = index => {
+    const { todoList } = this.state;
+    todoList[index].finished = true;
+    this.setState({
+      todoList
+    });
+  };
   deleteItem = index => {
     const { todoList } = this.state;
     const newTodos = [
@@ -58,7 +66,6 @@ class Main extends Component {
         style={{ flex: 1, paddingTop: 30 }}>
         <NavigationEvents
           onDidFocus={payload => {
-            console.log('payload', payload);
             const { todoList } = this.state;
 
             const todoTxt = this.props.navigation.state.params.text;
@@ -69,13 +76,14 @@ class Main extends Component {
               time === this.state.todoList[todoList.length - 1].time
             )
               return;
-            if (!todoTxt.length || !todoTitle.length) {
+            if (!todoTxt.length || !todoTitle.length || todoTxt == ' ') {
               return;
             }
             todoList.push({
               todoTxt,
               todoTitle,
-              time
+              time,
+              finished: false
             });
             this.setState({
               todoList
@@ -85,17 +93,20 @@ class Main extends Component {
         <View>
           <FlatList
             key={this.state.runId}
-            data={this.state.todoList.map((todo, i) => ({ ...todo, index: i }))}
+            data={this.state.todoList
+              .filter(todo => !todo.finished)
+              .map((todo, i) => ({ ...todo, index: i }))}
             renderItem={todo => (
               <TodoCard
+                shouldHaveIcons={true}
                 data={todo}
                 handleDelete={this.deleteItem}
                 key={Math.floor(Math.random() * 10000)}
+                handleDone={this.completeItem}
               />
             )}
           />
         </View>
-
         <View style={styles.test}>
           <TouchableNativeFeedback
             background={TouchableNativeFeedback.Ripple('#AAF', true)}
@@ -107,6 +118,25 @@ class Main extends Component {
             }>
             <MaterialCommunityIcons
               name="pencil"
+              color="rgb(233,30,99)"
+              size={16 * 2}
+            />
+          </TouchableNativeFeedback>
+        </View>
+        <View style={styles.test2}>
+          <TouchableNativeFeedback
+            background={TouchableNativeFeedback.Ripple('#AAF', true)}
+            onPress={() =>
+              setTimeout(
+                () =>
+                  this.props.navigation.navigate('Done', {
+                    list: this.state.todoList.filter(item => item.finished)
+                  }),
+                (1000 / 60) * 2
+              )
+            }>
+            <MaterialCommunityIcons
+              name="clipboard-check"
               color="rgb(233,30,99)"
               size={16 * 2}
             />
@@ -125,6 +155,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     right: 16,
+    borderRadius: 40,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 16
+  },
+  test2: {
+    height: 80,
+    width: 80,
+    backgroundColor: '#fff',
+    position: 'absolute',
+    bottom: 16,
+    left: 16,
     borderRadius: 40,
     display: 'flex',
     justifyContent: 'center',
