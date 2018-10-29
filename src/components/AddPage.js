@@ -12,7 +12,8 @@ import {
 import { LinearGradient } from 'expo';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Kohana } from 'react-native-textinput-effects';
-/* https://uigradients.com/#WitchingHour */
+/* https://uigradients.com/#WitchingHour 
+*/
 class Main extends Component {
   constructor() {
     super();
