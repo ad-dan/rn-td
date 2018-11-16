@@ -12,7 +12,7 @@ import { LinearGradient } from 'expo';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationEvents } from 'react-navigation';
 import { Kohana } from 'react-native-textinput-effects';
-/* https://uigradients.com/#WitchingHour */
+
 class DonePage extends Component {
   constructor(props) {
     super(props);
